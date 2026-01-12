@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "iino-e2e-test"
+version = "0.1.0"
+description = "End-to-end test automation framework using Playwright"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+playwright = "^1.40.0"
+pytest = "^8.0.0"
+pytest-playwright = "^0.4.3"
+pytest-html = "^4.1.1"
+pytest-xdist = "^3.5.0"
+python-dotenv = "^1.0.0"
+allure-pytest = "^2.13.2"
+faker = "^22.0.0"
+pytest-async = "^0.1.1"
+pytest-asyncio = "^1.1.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.1.0"
+flake8 = "^7.0.0"
+isort = "^5.13.0"
+mypy = "^1.8.0"
+pre-commit = "^3.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+markers = [
+    "api: mark test as API test",
+    "ui: mark test as UI test",
+    "smoke: mark test as smoke test",
+    "regression: mark test as regression test",
+    "critical: mark test as critical test",
+    "slow: mark test as slow running test"
+]
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+line_length = 120
