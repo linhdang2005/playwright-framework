@@ -13,44 +13,50 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 #read test data
-current_wd = os.getcwd()
-sys.path.append(current_wd)
-sys.path.append(os.path.join(current_wd, "utils"))
-sys.path.append(os.path.join(current_wd, "common"))
-sys.path.append(os.path.join(current_wd, "pages"))
-from pages.voyage_form_page import search_voyage_form, bl_table
-from pages.home_page import left_nav
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, PROJECT_ROOT)
+
 from utils import common
 
 
-
 #global variables
-test_config = current_wd + "/test_data/config_voyage_form.json"
-config_data = common.read_config(test_config)
-test_data = config_data["voyage_form"]
+config_data = common.read_config(
+    os.path.join(PROJECT_ROOT, "test_data", "config_test_data.json")
+)
+test_data_search = config_data["keyword"]
+test_data_book= config_data["book"]
 
-#Test case: Import voyage form
+#Scenario 1: Search book with multiple results
 @pytest.mark.asyncio
-async def test_import_voyage_form(page: Page):
-    test_case_data = test_data[0]
-    voyage_page = search_voyage_form(page)
-    nav_page = left_nav(page)
-    imported_form = bl_table(page)
+async def test_search_book(page):
     try:
-    # Navigate to Voyage Form page
-        await nav_page.navigate_to_voyage_form()
+    # Input keyword 1
+        await page.locator("#searchBox").fill(test_data_search["keyword1"])
+    # Click on search button
+        await page.locator("#basic-addon2").click()
+    # Count result return
+        keyword1 = test_data_search["keyword1"]
+        results_1 = page.locator("div.action-buttons a")
+        count_1 = await results_1.count()
+        print (f'total results: {count_1}')
+    # Verify result return match with keyword
+        for i in range(count_1):
+            title_text_1 = await results_1.nth(i).inner_text()
+            assert keyword1.lower() in title_text_1.lower()
 
-    # Click on Import button to open the import dialog
-        await voyage_page.click_import_voyage_form()
-
-    # Upload the file
-        file_path = str(Path("test_data/voyage_form_tempalte.xlsx").resolve())
-        await voyage_page.set_input_files("//input[@type='file']", file_path)
-
-        # Verify that the import was successful
-        await page.reload()
-        await expect(imported_form.row_voyage_form(test_case_data["voyage_form"]["voyage_form_filename"])).to_be_visible(timeout=10000)
-
+    # Input keyword 2
+        await page.locator("#searchBox").fill(test_data_search["keyword2"])
+    # Click on search button
+        await page.locator("#basic-addon2").click()
+    # Count result return
+        keyword2 = test_data_search["keyword2"]
+        results_2 = page.locator("div.action-buttons a")
+        count_2 = await results_2.count()
+        print (f'total results: {count_2}')
+    # Verify result return match with keyword
+        for i in range(count_2):
+            title_text_2 = await results_2.nth(i).inner_text()
+            assert keyword2.lower() in title_text_2.lower()
 
     except Exception as e:
         logger.error(f"Test failed due to: {e}")

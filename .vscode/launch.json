@@ -5,14 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Debug test file",
+            "name": "Debug pytest current test file",
             "type": "debugpy",
             "request": "launch",
             "module": "pytest",
             "args": [
-              "${file}"
+              "${file}",
+              "-s"
             ],
-            "django": true
+            "console": "integratedTerminal"
           }
     ]
 }

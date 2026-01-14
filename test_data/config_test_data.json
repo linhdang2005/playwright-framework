@@ -1,0 +1,14 @@
+{
+  "user": {
+    "username": "linhdangp1",
+    "password": "Demo@2026"
+  },
+  "keyword": {
+    "keyword1": "Design",
+    "keyword2": "design"
+  },
+  "book": {
+    "book1": "Learning JavaScript Design Patterns",
+    "book2": "Designing Evolvable Web APIs with ASP.NET"
+  }
+}

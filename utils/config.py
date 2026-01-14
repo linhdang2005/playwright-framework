@@ -4,4 +4,4 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-CONFIG = {"browser": os.getenv("BROWSER"), "url": os.getenv("URL"), "browser_path": os.getenv("BROWSER_PATH")}
+CONFIG = {"browser": os.getenv("BROWSER"), "url": os.getenv("URL")}

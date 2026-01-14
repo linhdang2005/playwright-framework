@@ -10,5 +10,6 @@
     ],
     "python.analysis.extraPaths": ["/Users/linh.phuong/venv/lib/python3.x/site-packages"],
     "python.analysis.indexing": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "python-envs.pythonProjects": []
 }
