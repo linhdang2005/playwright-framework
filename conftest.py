@@ -6,7 +6,7 @@ import os, sys
 
 @pytest.fixture(scope="function")
 async def browser():
-    """Create browser instance for each test."""
+    #Create browser instance
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(
             headless=False,
@@ -18,7 +18,7 @@ async def browser():
 
 @pytest.fixture(scope="function")
 async def context(browser):
-    """Create a fresh browser context for each test."""
+    #create broswer
     context = await browser.new_context()
     yield context
     await context.close()
@@ -26,7 +26,7 @@ async def context(browser):
 
 @pytest.fixture(scope="function")
 async def page(context):
-    """Create a page with automatic login for each test."""
+    #create page
     page = await context.new_page()
     await login_user.login_user(page)
     yield page

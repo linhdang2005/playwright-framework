@@ -1,5 +1,6 @@
 import pytest
 import os, sys
+import requests
 from playwright.sync_api import Playwright
 
 #read test data
@@ -11,17 +12,15 @@ config_data = common.read_config(
     os.path.join(PROJECT_ROOT, "test_data", "config_test_data.json")
 )
 test_data_book= config_data["book"]
-test_daata_user= config_data["user"]
+test_data_user= config_data["user"]
 
 
-def test_add_book_by_api(playwright: Playwright):
+def test_add_book_by_api():
     
-    request_context = playwright.request.new_context()
-
     # Define data test
-    username = test_daata_user["username"]
-    password = test_daata_user["password"]
-    user_id = test_daata_user["user_id"]
+    username = test_data_user["username"]
+    password = test_data_user["password"]
+    user_id = test_data_user["user_id"]
     book1_isbn = test_data_book["book1_isbn"]
     book2_isbn = test_data_book["book2_isbn"]
 
@@ -31,13 +30,13 @@ def test_add_book_by_api(playwright: Playwright):
         "userName": username,
         "password": password
     }
-    token_response = request_context.post(
+    token_response = requests.post(
         url=generate_token_url,
         data=generate_token_body
     )
 
     # Verify token is generated successfully
-    assert token_response.status == 200, token_response.text()
+    assert token_response.status_code  == 200, token_response.text
     token = token_response.json()["token"]
     print("TOKEN:", token)
 
@@ -59,12 +58,12 @@ def test_add_book_by_api(playwright: Playwright):
         ]
     }
 
-    add_book_response = request_context.post(
+    add_book_response = requests.post(
         url=add_book_url,
         headers=headers,
-        data=add_book_body
+        json=add_book_body
     )
 
-    assert add_book_response.status == 201, add_book_response.text()
+    assert add_book_response.status_code == 201, add_book_response.text
 
     print("ADD BOOK RESPONSE:", add_book_response.json())
