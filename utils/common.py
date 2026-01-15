@@ -43,7 +43,7 @@ async def login_user(page):
         await page.locator("#password").fill(test_data["password"])
         await page.get_by_role("button", name="Login").click()
         #verify login successfully
-        expect(page.locator("label")).to_have_text(test_data["username"])
+        await expect(page.locator("#userName-value")).to_have_text(test_data["username"])
         print("Login successfully")
 
     except Exception as e:

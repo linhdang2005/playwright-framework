@@ -1,21 +1,14 @@
-import pytest_asyncio
+import pytest
 from playwright.async_api import async_playwright
-import pytest, asyncio
 import utils.common as login_user
 import os, sys
 
-# @pytest.fixture(scope="session")
-# def event_loop():
-#     loop = asyncio.new_event_loop()
-#     asyncio.set_event_loop(loop)
-#     yield loop
-#     loop.close()
 
-
-@pytest_asyncio.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def browser():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(
+    """Create browser instance for each test."""
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(
             headless=False,
             slow_mo=300
         )
@@ -23,16 +16,17 @@ async def browser():
         await browser.close()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def context(browser):
-    print("👉 DEBUG: entering context fixture")
+    """Create a fresh browser context for each test."""
     context = await browser.new_context()
     yield context
     await context.close()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def page(context):
+    """Create a page with automatic login for each test."""
     page = await context.new_page()
     await login_user.login_user(page)
     yield page

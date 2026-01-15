@@ -1,7 +1,8 @@
 {
   "user": {
     "username": "linhdangp1",
-    "password": "Demo@2026"
+    "password": "Demo@2026",
+    "user_id": "da56868b-f79b-4abf-94a5-b21788d52747"
   },
   "keyword": {
     "keyword1": "Design",
@@ -9,6 +10,8 @@
   },
   "book": {
     "book1": "Learning JavaScript Design Patterns",
-    "book2": "Designing Evolvable Web APIs with ASP.NET"
+    "book2": "Designing Evolvable Web APIs with ASP.NET",
+    "book1_isbn": "9781449331818",
+    "book2_isbn": "9781449337711"
   }
 }
