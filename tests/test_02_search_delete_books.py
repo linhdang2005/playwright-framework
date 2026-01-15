@@ -26,6 +26,7 @@ config_data = common.read_config(
 test_data_search = config_data["keyword"]
 test_data_book= config_data["book"]
 
+# @pytest.mark.skip
 #Scenario 1: Search book with multiple results
 @pytest.mark.asyncio
 async def test_search_book(page):
@@ -65,3 +66,32 @@ async def test_search_book(page):
         print("Test passed!")
         assert True
 
+
+#Scenario 2: Delete book successfully
+
+async def test_delete_book(page):
+    try:
+    # Acces to profile page
+        await page.locator("//span[contains(text(), 'Profile')]").click()
+        # await page.wait_for_load_state("networkidle")
+    # User Search book: Leaning JavaScript Design Patterns
+        await page.locator("#searchBox").fill(test_data_book["book1"])
+        await page.locator("#basic-addon2").click()
+    # Delete book
+        await page.locator("#delete-record-undefined").click()
+
+        # Handle alert popup
+        async with page.expect_event("dialog") as dialog_info:
+         await page.get_by_role("button", name="OK").click()
+        dialog = await dialog_info.value
+        await dialog.accept()
+
+    # Verify result
+        await expect(page.locator("//div[contains(text(), 'No rows found')]")).to_be_visible()
+
+    except Exception as e:
+        logger.error(f"Test failed due to: {e}")
+        assert False
+    else:
+        print("Test passed!")
+        assert True
