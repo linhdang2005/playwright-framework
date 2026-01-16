@@ -1,7 +1,8 @@
 import pytest
 from playwright.async_api import async_playwright
-import utils.common as login_user
+from utils.common import login_user
 import os, sys
+
 
 
 @pytest.fixture(scope="function")
@@ -26,11 +27,15 @@ async def context(browser):
 
 @pytest.fixture(scope="function")
 async def page(context):
-    #create page
     page = await context.new_page()
-    await login_user.login_user(page)
     yield page
     await page.close()
+
+
+@pytest.fixture(scope="function")
+async def logged_in_page(page):
+    await login_user(page)
+    return page
 
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

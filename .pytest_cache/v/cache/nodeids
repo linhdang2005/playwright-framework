@@ -1,7 +1,0 @@
-[
-  "debug_test.py::test_browser",
-  "tests/test_01_add_book_api.py::test_add_book_by_api",
-  "tests/test_02_search_delete_books.py::test_delete_book",
-  "tests/test_02_search_delete_books.py::test_search_book",
-  "tests/test_case.py::test_search_book"
-]

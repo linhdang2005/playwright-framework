@@ -13,5 +13,9 @@
     "book2": "Designing Evolvable Web APIs with ASP.NET",
     "book1_isbn": "9781449331818",
     "book2_isbn": "9781449337711"
+  },
+  "url": {
+    "generate_token_url": "https://demoqa.com/Account/v1/GenerateToken",
+    "add_book_url": "https://demoqa.com/BookStore/v1/Books" 
   }
 }

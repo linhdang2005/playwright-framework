@@ -1,8 +1,11 @@
 import pytest
 import os, sys
-from playwright.async_api import Page, expect
-from pathlib import Path
-from pytest_asyncio import fixture
+from playwright.async_api import expect
+from pages.profile_page import profilepage
+from pages.login_page import loginpage
+from pages.search_book_page import bookpage
+from api.add_book_api import add_books
+from api.generate_token_api import generate_token
 
 
 #logging configuration
@@ -29,32 +32,32 @@ test_data_book= config_data["book"]
 # @pytest.mark.skip
 #Scenario 1: Search book with multiple results
 @pytest.mark.asyncio
-async def test_search_book(page):
+async def test_search_book(logged_in_page):
+    page_book = bookpage(logged_in_page)
+    
     try:
-    # Input keyword 1
-        await page.locator("#searchBox").fill(test_data_search["keyword1"])
-    # Click on search button
-        await page.locator("#basic-addon2").click()
-    # Count result return
+    #search with keyword 1 and verify result
+        await page_book.search_book(test_data_search["keyword1"])
+    
+        # Count result return
         keyword1 = test_data_search["keyword1"]
-        results_1 = page.locator("div.action-buttons a")
+        results_1 = page_book.result_titles
         count_1 = await results_1.count()
         print (f'total results: {count_1}')
-    # Verify result return match with keyword
+        # Verify result return match with keyword
         for i in range(count_1):
             title_text_1 = await results_1.nth(i).inner_text()
             assert keyword1.lower() in title_text_1.lower()
 
-    # Input keyword 2
-        await page.locator("#searchBox").fill(test_data_search["keyword2"])
-    # Click on search button
-        await page.locator("#basic-addon2").click()
-    # Count result return
+    #search with keyword 2 and verify result
+        await page_book.search_book(test_data_search["keyword2"])
+    
+        # Count result return
         keyword2 = test_data_search["keyword2"]
-        results_2 = page.locator("div.action-buttons a")
+        results_2 = page_book.result_titles
         count_2 = await results_2.count()
         print (f'total results: {count_2}')
-    # Verify result return match with keyword
+        # Verify result return match with keyword
         for i in range(count_2):
             title_text_2 = await results_2.nth(i).inner_text()
             assert keyword2.lower() in title_text_2.lower()
@@ -67,27 +70,32 @@ async def test_search_book(page):
         assert True
 
 
-#Scenario 2: Delete book successfully
+  # add books first via API
+def test_add_books_api():
+    token = generate_token()
+    add_books(token)
 
-async def test_delete_book(page):
+#Scenario 2: Delete book successfully
+# @pytest.mark.skip
+async def test_delete_book(logged_in_page):
+    profile_page = profilepage(logged_in_page)
+
     try:
     # Acces to profile page
-        await page.locator("//span[contains(text(), 'Profile')]").click()
-        # await page.wait_for_load_state("networkidle")
+        await profile_page.navigate_to_profile()
     # User Search book: Leaning JavaScript Design Patterns
-        await page.locator("#searchBox").fill(test_data_book["book1"])
-        await page.locator("#basic-addon2").click()
+        await profile_page.search_book(test_data_book["book1"])
     # Delete book
-        await page.locator("#delete-record-undefined").click()
+        await profile_page.delete_book_button.click()
 
         # Handle alert popup
-        async with page.expect_event("dialog") as dialog_info:
-         await page.get_by_role("button", name="OK").click()
+        async with logged_in_page.expect_event("dialog") as dialog_info:
+            await profile_page.confirm_delete_button.click()
         dialog = await dialog_info.value
         await dialog.accept()
 
     # Verify result
-        await expect(page.locator("//div[contains(text(), 'No rows found')]")).to_be_visible()
+        await expect(profile_page.no_rows_found).to_be_visible()
 
     except Exception as e:
         logger.error(f"Test failed due to: {e}")
